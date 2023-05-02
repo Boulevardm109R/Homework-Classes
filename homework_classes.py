@@ -28,8 +28,8 @@ class Student:
             print('на курсе нет такого лектора!')
 
     def __str__(self):
-        comm = f'Имя: {self.name}\nФамилия: {self.surname}\nСредняя оценка за домашние задания: {self._round_rate()}\nКурсы в процессе изучения: {self.courses_in_progress}\nЗавершенные курсы: {self.finished_courses}'
-        return comm
+        co = f'Имя: {self.name}\nФамилия: {self.surname}\nСредняя за домашние задания: {self._round_rate()}\nКурсы в процессе: {self.courses_in_progress}\nЗавершенные курсы: {self.finished_courses}'
+        return co
 
     def __lt__(self, other):
         if not isinstance(other, Student):
@@ -78,7 +78,7 @@ class Reviewer(Mentor):
         comm = f'Имя:{self.name} \nФамилия:{self.surname}'
         return comm
 
-    def rate_hw(self,student, course, grade):
+    def rate_hw(self, student, course, grade):
         if isinstance(student, Student) and course in student.courses_in_progress:
             if course in student.grade:
                 student.grade[course] += [grade]
@@ -94,8 +94,10 @@ some_lecturer2 = Lecturer("Владимир", "Путилин")
 some_student1 = Student("Илья", "Пупкин", "муж")
 some_student2 = Student("Василий", "Тёркин", "муж")
 
+some_student1.courses_in_progress += ["SQL"]
 some_student1.courses_in_progress += ["Python"]
 some_student2.courses_in_progress += ["SQL"]
+some_student2.courses_in_progress += ["Python"]
 some_lecturer1.courses_attached += ["Python"]
 some_lecturer2.courses_attached += ["SQL"]
 
@@ -108,7 +110,9 @@ some_student1.rate_lecturer(some_lecturer1, "Python", 5)
 some_student2.rate_lecturer(some_lecturer2, "SQL", 7)
 
 some_reviever1.rate_hw(some_student1, "Python", 9)
+some_reviever1.rate_hw(some_student1, "SQL", 4)
 some_reviever2.rate_hw(some_student2, "SQL", 9)
+some_reviever2.rate_hw(some_student2, "Python", 7)
 some_student1.rate_lecturer(some_lecturer1, "Python", 7)
 some_student2.rate_lecturer(some_lecturer2, "SQL", 9)
 some_student1.rate_lecturer(some_lecturer1, "Python", 2)
@@ -119,6 +123,24 @@ some_reviever1.rate_hw(some_student2, "SQL", 6)
 some_reviever2.rate_hw(some_student1, "Python", 8)
 some_reviever1.rate_hw(some_student2, "SQL", 1)
 
+some_student_list = [some_student1, some_student2]
+some_lecturer_list = [some_lecturer1, some_lecturer2]
+
+
+def rating_for_all(course, some_student_list):
+    sum_rating_stud = 0
+    total_rating = 0
+    for student in some_student_list:
+        for course in student.grade:
+            student_sum_rating = student._round_rate()
+            sum_rating_stud += student_sum_rating
+            total_rating += 1
+    circle_rating = round(sum_rating_stud / total_rating, 2)
+    print(f'Средняя оценка на курсе {course} :{circle_rating}')
+
+
+rating_for_all("SQL", some_student_list)
+rating_for_all("Python", some_lecturer_list)
 print(some_lecturer1)
 print(some_lecturer2)
 print(some_student1)
